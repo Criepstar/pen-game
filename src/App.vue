@@ -1,16 +1,14 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="bg-blue-400 h-screen">
+    <h1 class="text-white text-4xl pt-4">OP GAME</h1>
+    <button class="button">Start Game</button>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
 }
 </script>
 
@@ -21,6 +19,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+.button{
+  @apply border-green-400 bg-green-400 border-2 rounded-lg w-48 h-12 z-10; 
+}
+.button:active{
+  @apply ring-2 ring-white
 }
 </style>
