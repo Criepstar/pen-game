@@ -1,24 +1,9 @@
-# vue-game
+# pen-game
 
-## Project setup
-```
-npm install
-```
+### What is pen game?
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Pen game is a little game that I made out of fun.
+On the start of the game there are 12 pencils from which you can take every round one or two.
+You win if you take the last pencil. You can choose as oponent an other Player or an Computer.
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Website: https://game.criepstar.tech
