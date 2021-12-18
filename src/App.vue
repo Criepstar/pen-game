@@ -57,7 +57,9 @@
         <span v-for="(pen, i) in pens" v-bind:key="i">
           <img class="w-5 sm:w-11 mx-1" src="./assets/pen.svg" />
         </span>
+        
       </div>
+      <div class="w-12 h-12 relative bg-red-200"></div>
       <div v-if="pens.length > 0" class="mt-8">
         How many pens do you want to take? <br />
         <button class="game-button" @click="takeOne" :disabled="turn">1</button>
@@ -360,5 +362,9 @@ export default {
 }
 .game-button:disabled {
   @apply bg-opacity-50;
+}
+@keyframes moveup{
+  from {bottom:0px}
+  to{top:50%}
 }
 </style>
