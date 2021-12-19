@@ -18,9 +18,9 @@
           class="shadow-md my-5 mx-6 sm:max-w-sm p-4 bg-white text-black rounded-md"
         >
           <strong>How does the game work?</strong><br />
-          At the start of the game there are 12 pencils. 
-          Every round you can take 1 or 2 pencils away. 
-          The winner is the one who takes the last pencil!  <br />
+          At the start of the game there are 12 pencils. Every round you can
+          take 1 or 2 pencils away. The winner is the one who takes the last
+          pencil! <br />
           Have fun!
         </p>
       </span>
@@ -34,7 +34,9 @@
           v-model="ai"
         />
       </div>
-      <button class="button flex justify-center items-center" @click="start"><span><img class="mr-2" src="./assets/play.svg"></span>Start Game</button>
+      <button class="button flex justify-center items-center" @click="start">
+        <span><img class="mr-2" src="./assets/play.svg" /></span>Start Game
+      </button>
     </div>
     <div
       v-if="route == 'game'"
@@ -57,13 +59,21 @@
         <span v-for="(pen, i) in pens" v-bind:key="i">
           <img class="w-5 sm:w-11 mx-1" src="./assets/pen.svg" />
         </span>
-        
       </div>
-      <div class="w-12 h-12 relative bg-red-200"></div>
-      <div v-if="pens.length > 0" class="mt-8">
+      <div
+        v-if="pens.length > 0"
+        class="mt-8 bg-white h-40 text-black p-4 rounded-xl"
+      >
         How many pens do you want to take? <br />
         <button class="game-button" @click="takeOne" :disabled="turn">1</button>
-        <button class="game-button" @click="takeTwo" :disabled="turn">2</button>
+        <button class="game-button" @click="takeTwo" :disabled="turn">2</button
+        ><br />
+        <p v-show="lastTurn != 0 && lastTurn == 2">
+          The last player took {{ lastTurn }} pens
+        </p>
+        <p v-show="lastTurn != 0 && lastTurn == 1">
+          The last player took {{ lastTurn }} pen
+        </p>
       </div>
       <div v-if="pens.length == 0">
         <p v-if="!ai" class="shadow-md bg-white text-black rounded p-5">
@@ -94,7 +104,12 @@
             v-model="ai_rs"
           />
         </div>
-        <button class="button mt-2 flex justify-center items-center" @click="reset"><span><img class="mr-2" src="./assets/repeat.svg"></span>Play again</button>
+        <button
+          class="button mt-2 flex justify-center items-center"
+          @click="reset"
+        >
+          <span><img class="mr-2" src="./assets/repeat.svg" /></span>Play again
+        </button>
       </div>
     </div>
     <loading v-if="loading"></loading>
@@ -154,6 +169,7 @@ export default {
       current: 1,
       scoreP1: 0,
       scoreP2: 0,
+      lastTurn: 0,
     };
   },
   watch: {
@@ -184,6 +200,7 @@ export default {
       this.loading = true;
       this.ai_rs = this.ai;
       const starter = Math.floor(Math.random() * 2 + 1);
+      this.lastTurn = 0;
       if (!this.ai) {
         this.current = starter;
       } else {
@@ -203,10 +220,12 @@ export default {
     },
     takeOne() {
       this.pens.splice(0, 1);
+      this.lastTurn = 1;
       this.setCurrent();
     },
     takeTwo() {
       this.pens.splice(0, 2);
+      this.lastTurn = 2;
       this.setCurrent();
     },
     checkWinner() {},
@@ -233,8 +252,10 @@ export default {
           const random = Math.floor(Math.random() * 2);
           if (random == 0) {
             this.pens.splice(0, 1);
+            this.lastTurn = 1;
           } else {
             this.pens.splice(0, 2);
+            this.lastTurn = 2;
           }
         } else if (length == 8) {
           this.pens.splice(0, 2);
@@ -242,36 +263,46 @@ export default {
           const random = Math.floor(Math.random() * 2);
           if (random == 0) {
             this.pens.splice(0, 1);
+            this.lastTurn = 1;
           } else {
             this.pens.splice(0, 2);
+            this.lastTurn = 2;
           }
         } else if (length == 6) {
           const random = Math.floor(Math.random() * 2);
           if (random == 0) {
             this.pens.splice(0, 1);
+            this.lastTurn = 1;
           } else {
             this.pens.splice(0, 2);
+            this.lastTurn = 2;
           }
         } else if (length == 5) {
           this.pens.splice(0, 2);
+          this.lastTurn = 2;
         } else if (length == 4) {
           this.pens.splice(0, 1);
+          this.lastTurn = 1;
         } else if (length == 3) {
           const random = Math.floor(Math.random() * 2);
           if (random == 0) {
             this.pens.splice(0, 1);
+            this.lastTurn = 1;
           } else {
             this.pens.splice(0, 2);
+            this.lastTurn = 2;
           }
         } else if (length == 2) {
           this.pens.splice(0, 2);
+          this.lastTurn = 2;
         } else if (length == 1) {
           this.pens.splice(0, 1);
+          this.lastTurn = 1;
         }
         if (this.pens.length > 0) {
           this.turn = false;
         }
-      }, 500);
+      }, 1000);
     },
     reset() {
       this.loading = true;
@@ -280,6 +311,7 @@ export default {
         this.loading = false;
         this.turn = false;
         this.ai = this.ai_rs;
+        this.lastTurn = 0;
         if (!this.ai) {
           this.current = starter;
         } else {
@@ -327,8 +359,8 @@ export default {
             id: 12,
           },
         ];
-        if(this.turn){
-          this.aiPlay()
+        if (this.turn) {
+          this.aiPlay();
         }
       }, 1000);
     },
@@ -362,9 +394,5 @@ export default {
 }
 .game-button:disabled {
   @apply bg-opacity-50;
-}
-@keyframes moveup{
-  from {bottom:0px}
-  to{top:50%}
 }
 </style>
