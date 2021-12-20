@@ -18,12 +18,33 @@
           class="shadow-md my-5 mx-6 sm:max-w-sm p-4 bg-white text-black rounded-md"
         >
           <strong>How does the game work?</strong><br />
-          At the start of the game there are 12 pencils. Every round you can
-          take 1 or 2 pencils away. The winner is the one who takes the last
-          pencil! <br />
+          At the start of the game there are 12(or more, you can choose)
+          pencils. Every round you can take 1 or 2 pencils away. The winner is
+          the one who takes the last pencil! <br />
           Have fun!
         </p>
       </span>
+      <div>
+        <label>
+          <span>With how many pens do you want to play?</span>
+        </label>
+        <br />
+        <div class="flex items-center justify-center mt-2">
+          <button
+            class="button w-10 h-10 mr-3 text-xl flex items-center justify-center"
+            @click="increase"
+          >
+            <span><img src="./assets/plus.svg" /></span>
+          </button>
+          {{ penCount }}
+          <button
+            class="button w-10 h-10 ml-3 text-xl flex items-center justify-center"
+            @click="decrease"
+          >
+            <span><img src="./assets/minus.svg" /></span>
+          </button>
+        </div>
+      </div>
       <div class="flex justify-center items-center my-4">
         <label>
           <span>Play against Computer?</span>
@@ -54,15 +75,15 @@
       </p>
       <div
         v-if="pens.length > 0"
-        class="flex items-center mt-2 justify-center flex-row"
+        class="flex items-center mt-2 justify-center flex-row flex-wrap pen-div"
       >
         <span v-for="(pen, i) in pens" v-bind:key="i">
-          <img class="w-5 sm:w-11 mx-1" src="./assets/pen.svg" />
+          <img class="w-5 sm:w-11 mx-1 my-3" src="./assets/pen.svg" />
         </span>
       </div>
       <div
         v-if="pens.length > 0"
-        class="mt-8 bg-white h-40 text-black p-4 rounded-xl"
+        class="mt-5 bg-white h-40 text-black p-4 rounded-xl"
       >
         How many pens do you want to take? <br />
         <button class="game-button" @click="takeOne" :disabled="turn">1</button>
@@ -75,7 +96,7 @@
           The last player took {{ lastTurn }} pen
         </p>
       </div>
-      <div v-if="pens.length == 0">
+      <div v-if="pens.length == 0" class="flex items-center justify-center flex-col">
         <p v-if="!ai" class="shadow-md bg-white text-black rounded p-5">
           The game is over! <br />
           Player {{ current }} won! <br /><br />
@@ -94,6 +115,27 @@
           Player: {{ scoreP1 }}<br />
           Computer: {{ scoreP2 }}
         </p>
+        <div class="mt-3">
+        <label>
+          <span>With how many pens do you want to play?</span>
+        </label>
+        <br />
+        <div class="flex items-center justify-center mt-2">
+          <button
+            class="button w-10 h-10 mr-3 text-xl flex items-center justify-center"
+            @click="increase"
+          >
+            <span><img src="./assets/plus.svg" /></span>
+          </button>
+          {{ penCount }}
+          <button
+            class="button w-10 h-10 ml-3 text-xl flex items-center justify-center"
+            @click="decrease"
+          >
+            <span><img src="./assets/minus.svg" /></span>
+          </button>
+        </div>
+      </div>
         <div class="flex justify-center items-center mt-4">
           <label>
             <span>Play against Computer?</span>
@@ -163,6 +205,42 @@ export default {
         {
           id: 12,
         },
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+        {
+          id: 3,
+        },
+        {
+          id: 4,
+        },
+        {
+          id: 5,
+        },
+        {
+          id: 6,
+        },
+        {
+          id: 7,
+        },
+        {
+          id: 8,
+        },
+        {
+          id: 9,
+        },
+        {
+          id: 10,
+        },
+        {
+          id: 11,
+        },
+        {
+          id: 24,
+        },
       ],
       route: "home",
       turn: false,
@@ -170,6 +248,7 @@ export default {
       scoreP1: 0,
       scoreP2: 0,
       lastTurn: 0,
+      penCount: 12,
     };
   },
   watch: {
@@ -201,6 +280,7 @@ export default {
       this.ai_rs = this.ai;
       const starter = Math.floor(Math.random() * 2 + 1);
       this.lastTurn = 0;
+      this.pens.splice(0, 24 - this.penCount)
       if (!this.ai) {
         this.current = starter;
       } else {
@@ -304,6 +384,16 @@ export default {
         }
       }, 1000);
     },
+    increase(){
+      if(this.penCount < 24){
+        this.penCount ++
+      }
+    },
+    decrease(){
+      if(this.penCount > 12){
+        this.penCount --
+      }
+    },
     reset() {
       this.loading = true;
       let starter = Math.floor(Math.random() * 2 + 1);
@@ -358,7 +448,44 @@ export default {
           {
             id: 12,
           },
+          {
+            id: 1,
+          },
+          {
+            id: 2,
+          },
+          {
+            id: 3,
+          },
+          {
+            id: 4,
+          },
+          {
+            id: 5,
+          },
+          {
+            id: 6,
+          },
+          {
+            id: 7,
+          },
+          {
+            id: 8,
+          },
+          {
+            id: 9,
+          },
+          {
+            id: 10,
+          },
+          {
+            id: 11,
+          },
+          {
+            id: 12,
+          },
         ];
+        this.pens.splice(0, 24 - this.penCount)
         if (this.turn) {
           this.aiPlay();
         }
@@ -394,5 +521,13 @@ export default {
 }
 .game-button:disabled {
   @apply bg-opacity-50;
+}
+.pen-div{
+  width:336px;
+}
+@media (min-width: 640px){
+  .pen-div{
+    width: 624px;
+  }
 }
 </style>
