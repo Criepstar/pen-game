@@ -19,8 +19,8 @@
         >
           <strong>How does the game work?</strong><br />
           At the start of the game there are 12(or more, you can choose)
-          pencils. Every round you can take 1 or 2 pencils away. The winner is
-          the one who takes the last pencil! <br />
+          pencils. Every round you can take 1 or 2 (or 3 if you want so) pencils away. The winner is
+          the one who takes the last pencil <br />
           Have fun!
         </p>
       </span>
