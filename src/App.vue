@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-blue-400 h-screen text-white">
-    <span class="absolute bottom-0 right-0 m-4">
+  <div class="bg-blue-400 h-screen main text-white">
+    <span class="fixed right-0 bottom-0 m-3">
       <p>
         Made by
         <a href="https://github.com/Criepstar" target="about_blank"
@@ -32,18 +32,30 @@
         <div class="flex items-center justify-center mt-2">
           <button
             class="button w-10 h-10 mr-3 text-xl flex items-center justify-center"
-            @click="increase"
-          >
-            <span><img src="./assets/plus.svg" /></span>
-          </button>
-          {{ penCount }}
-          <button
-            class="button w-10 h-10 ml-3 text-xl flex items-center justify-center"
             @click="decrease"
           >
             <span><img src="./assets/minus.svg" /></span>
           </button>
+          {{ penCount }}
+          <button
+            class="button w-10 h-10 ml-3 text-xl flex items-center justify-center"
+            @click="increase"
+          >
+            <span><img src="./assets/plus.svg" /></span>
+          </button>
         </div>
+      </div>
+      <div class="mt-2">
+        <label>
+          <span>How many pens per round?</span>
+        </label>
+        <select
+          v-model="pensRound"
+          class="text-black rounded-xl ml-2 ring-green-400 border-green-400"
+        >
+          <option>2</option>
+          <option>3</option>
+        </select>
       </div>
       <div class="flex justify-center items-center my-4">
         <label>
@@ -87,16 +99,26 @@
       >
         How many pens do you want to take? <br />
         <button class="game-button" @click="takeOne" :disabled="turn">1</button>
-        <button class="game-button" @click="takeTwo" :disabled="turn">2</button
+        <button class="game-button" @click="takeTwo" :disabled="turn">2</button>
+        <button
+          v-if="pensRound == 3"
+          class="game-button"
+          @click="takeThree"
+          :disabled="turn"
+        >
+          3</button
         ><br />
-        <p v-show="lastTurn != 0 && lastTurn == 2">
+        <p v-show="lastTurn != 0 && lastTurn >= 2">
           The last player took {{ lastTurn }} pens
         </p>
         <p v-show="lastTurn != 0 && lastTurn == 1">
           The last player took {{ lastTurn }} pen
         </p>
       </div>
-      <div v-if="pens.length == 0" class="flex items-center justify-center flex-col">
+      <div
+        v-if="pens.length == 0"
+        class="flex items-center justify-center flex-col"
+      >
         <p v-if="!ai" class="shadow-md bg-white text-black rounded p-5">
           The game is over! <br />
           Player {{ current }} won! <br /><br />
@@ -116,26 +138,38 @@
           Computer: {{ scoreP2 }}
         </p>
         <div class="mt-3">
-        <label>
-          <span>With how many pens do you want to play?</span>
-        </label>
-        <br />
-        <div class="flex items-center justify-center mt-2">
-          <button
-            class="button w-10 h-10 mr-3 text-xl flex items-center justify-center"
-            @click="increase"
-          >
-            <span><img src="./assets/plus.svg" /></span>
-          </button>
-          {{ penCount }}
-          <button
-            class="button w-10 h-10 ml-3 text-xl flex items-center justify-center"
-            @click="decrease"
-          >
-            <span><img src="./assets/minus.svg" /></span>
-          </button>
+          <label>
+            <span>With how many pens do you want to play?</span>
+          </label>
+          <br />
+          <div class="flex items-center justify-center mt-2">
+            <button
+              class="button w-10 h-10 mr-3 text-xl flex items-center justify-center"
+              @click="decrease"
+            >
+              <span><img src="./assets/minus.svg" /></span>
+            </button>
+            {{ penCount }}
+            <button
+              class="button w-10 h-10 ml-3 text-xl flex items-center justify-center"
+              @click="increase"
+            >
+              <span><img src="./assets/plus.svg" /></span>
+            </button>
+          </div>
         </div>
-      </div>
+        <div class="mt-2">
+          <label>
+            <span>How many pens per round?</span>
+          </label>
+          <select
+            v-model="pensRound"
+            class="text-black rounded-xl ml-2 ring-green-400 border-green-400"
+          >
+            <option>2</option>
+            <option>3</option>
+          </select>
+        </div>
         <div class="flex justify-center items-center mt-4">
           <label>
             <span>Play against Computer?</span>
@@ -249,6 +283,7 @@ export default {
       scoreP2: 0,
       lastTurn: 0,
       penCount: 12,
+      pensRound: 2,
     };
   },
   watch: {
@@ -280,7 +315,7 @@ export default {
       this.ai_rs = this.ai;
       const starter = Math.floor(Math.random() * 2 + 1);
       this.lastTurn = 0;
-      this.pens.splice(0, 24 - this.penCount)
+      this.pens.splice(0, 24 - this.penCount);
       if (!this.ai) {
         this.current = starter;
       } else {
@@ -308,6 +343,11 @@ export default {
       this.lastTurn = 2;
       this.setCurrent();
     },
+    takeThree() {
+      this.pens.splice(0, 3);
+      this.lastTurn = 3;
+      this.setCurrent();
+    },
     checkWinner() {},
     setCurrent() {
       if (this.pens.length > 0) {
@@ -326,72 +366,161 @@ export default {
       }
     },
     aiPlay() {
-      let length = this.pens.length;
       setTimeout(() => {
-        if (length >= 9) {
-          const random = Math.floor(Math.random() * 2);
-          if (random == 0) {
-            this.pens.splice(0, 1);
-            this.lastTurn = 1;
-          } else {
-            this.pens.splice(0, 2);
-            this.lastTurn = 2;
-          }
-        } else if (length == 8) {
-          this.pens.splice(0, 2);
-        } else if (length == 7) {
-          const random = Math.floor(Math.random() * 2);
-          if (random == 0) {
-            this.pens.splice(0, 1);
-            this.lastTurn = 1;
-          } else {
-            this.pens.splice(0, 2);
-            this.lastTurn = 2;
-          }
-        } else if (length == 6) {
-          const random = Math.floor(Math.random() * 2);
-          if (random == 0) {
-            this.pens.splice(0, 1);
-            this.lastTurn = 1;
-          } else {
-            this.pens.splice(0, 2);
-            this.lastTurn = 2;
-          }
-        } else if (length == 5) {
-          this.pens.splice(0, 2);
-          this.lastTurn = 2;
-        } else if (length == 4) {
-          this.pens.splice(0, 1);
-          this.lastTurn = 1;
-        } else if (length == 3) {
-          const random = Math.floor(Math.random() * 2);
-          if (random == 0) {
-            this.pens.splice(0, 1);
-            this.lastTurn = 1;
-          } else {
-            this.pens.splice(0, 2);
-            this.lastTurn = 2;
-          }
-        } else if (length == 2) {
-          this.pens.splice(0, 2);
-          this.lastTurn = 2;
-        } else if (length == 1) {
-          this.pens.splice(0, 1);
-          this.lastTurn = 1;
+        if (this.pensRound == 2) {
+          this.aiTwo();
+        }
+        if (this.pensRound == 3) {
+          this.aiThree();
         }
         if (this.pens.length > 0) {
           this.turn = false;
         }
       }, 1000);
     },
-    increase(){
-      if(this.penCount < 24){
-        this.penCount ++
+    increase() {
+      if (this.penCount < 24) {
+        this.penCount++;
       }
     },
-    decrease(){
-      if(this.penCount > 12){
-        this.penCount --
+    decrease() {
+      if (this.penCount > 12) {
+        this.penCount--;
+      }
+    },
+    aiTwo() {
+      let length = this.pens.length;
+      if (length >= 9) {
+        const random = Math.floor(Math.random() * 2);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        }
+      } else if (length == 8) {
+        this.pens.splice(0, 2);
+      } else if (length == 7) {
+        const random = Math.floor(Math.random() * 2);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        }
+      } else if (length == 6) {
+        const random = Math.floor(Math.random() * 2);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        }
+      } else if (length == 5) {
+        this.pens.splice(0, 2);
+        this.lastTurn = 2;
+      } else if (length == 4) {
+        this.pens.splice(0, 1);
+        this.lastTurn = 1;
+      } else if (length == 3) {
+        const random = Math.floor(Math.random() * 2);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        }
+      } else if (length == 2) {
+        this.pens.splice(0, 2);
+        this.lastTurn = 2;
+      } else if (length == 1) {
+        this.pens.splice(0, 1);
+        this.lastTurn = 1;
+      }
+    },
+    aiThree() {
+      let length = this.pens.length;
+      if (length >= 12) {
+        const random = Math.floor(Math.random() * 3);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else if (random == 2) {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        } else {
+          this.pens.splice(0, 3);
+          this.lastTurn = 3;
+        }
+      } else if (length == 11) {
+        this.pens.splice(0, 3);
+      } else if (length == 10) {
+        const random = Math.floor(Math.random() * 3);
+        if (random == 0) {
+          this.pens.splice(0, 3);
+          this.lastTurn = 3;
+        } else {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        }
+      } else if (length == 10) {
+        this.pens.splice(0, 2);
+        this.lastTurn = 2;
+      } else if (length == 9) {
+        this.pens.splice(0, 1);
+        this.lastTurn = 1;
+      } else if (length == 8) {
+        const random = Math.floor(Math.random() * 3);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else if (random == 2) {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        } else {
+          this.pens.splice(0, 3);
+          this.lastTurn = 3;
+        }
+      } else if (length == 7) {
+        const random = Math.floor(Math.random() * 4);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else {
+          this.pens.splice(0, 3);
+          this.lastTurn = 3;
+        }
+      } else if (length == 6) {
+        this.pens.splice(0, 2);
+        this.lastTurn = 2;
+      } else if (length == 5) {
+        this.pens.splice(0, 1);
+        this.lastTurn = 1;
+      } else if (length == 4) {
+        const random = Math.floor(Math.random() * 3);
+        if (random == 0) {
+          this.pens.splice(0, 1);
+          this.lastTurn = 1;
+        } else if (random == 2) {
+          this.pens.splice(0, 2);
+          this.lastTurn = 2;
+        } else {
+          this.pens.splice(0, 3);
+          this.lastTurn = 3;
+        }
+      } else if (length == 3) {
+        this.pens.splice(0, 3);
+        this.lastTurn = 3;
+      } else if (length == 2) {
+        this.pens.splice(0, 2);
+        this.lastTurn = 2;
+      } else if (length == 1) {
+        this.pens.splice(0, 1);
+        this.lastTurn = 1;
       }
     },
     reset() {
@@ -485,7 +614,7 @@ export default {
             id: 12,
           },
         ];
-        this.pens.splice(0, 24 - this.penCount)
+        this.pens.splice(0, 24 - this.penCount);
         if (this.turn) {
           this.aiPlay();
         }
@@ -522,12 +651,16 @@ export default {
 .game-button:disabled {
   @apply bg-opacity-50;
 }
-.pen-div{
-  width:336px;
+.pen-div {
+  width: 336px;
 }
-@media (min-width: 640px){
-  .pen-div{
+@media (min-width: 630px) {
+  .pen-div {
     width: 624px;
   }
+    .main {
+        min-height: 720px;
+    }
 }
+
 </style>
